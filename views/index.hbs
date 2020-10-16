@@ -1,0 +1,96 @@
+
+<div class="responseContainer" style="display: none;">
+  <p></p>
+  <img />
+  <button onClick="window.location.href = window.location.origin">Return</button>
+</div>
+
+<div class="imageContainer">
+  <p> When you upload the picture the site busy-waits so you need to wait a little bit </p><br />
+  <button id="Upload">Upload a Picture</button>
+  <button id="Snap">Snap a Picture</button><br/>
+
+  <div class="snapContainer">
+    <div id="camContainer"></div>
+    <div id="picture_from_cam"></div>
+    <button id="snapshot">Take Snapshot</button>
+    <button id="upload" style="display: none;">Upload</button>
+    <button id="retake">Retake</button>
+  </div>
+  <div class="uploadContainer">
+    <form action="/" method="POST" enctype="multipart/form-data">
+      <input type="file" name="file" size="50" /> <br />
+      <input type="submit" value="submit" />
+    </form>
+  </div>
+</div>
+
+<script>
+  let state = 0;
+  $('#Upload').on('click', function(){
+    state = 1;
+    console.log(state);
+    $('.uploadContainer').css("display", "block");
+    $('.snapContainer').css("display", "none");
+  });
+  $('#Snap').on('click', function(){
+    state = 2;
+    $('.snapContainer').css("display", "block");
+    $('.uploadContainer').css("display", "none");
+    Webcam.attach( '#camContainer' );
+    // $('#camContainer').css("display", "block");
+    // $('#snapshot').css("display", "block");
+    // $('#retake').css("display", "none");
+    // $('#picture_from_cam').css("display", "none");
+    console.log(state);
+  });
+  $('#snapshot').on('click', function(){
+    console.log("SNAAAAP");
+    $('#camContainer').css("display", "none");
+    $('#snapshot').css("display", "none");
+    $('#retake').css("display", "block");
+    $("#upload").css("display", "block");
+    $('#picture_from_cam').css("display", "block");
+    Webcam.snap( function(img_data_url) {
+      document.getElementById('picture_from_cam').innerHTML = '<img src="'+img_data_url+'"/>';
+    } );
+  });
+
+  $('#upload').on('click', function(){
+    //document.getElementById("loading").innerHTML="Saving, please wait...";
+    var file =  $('#picture_from_cam > img').attr('src');
+    console.log(file);
+    var formdata = new FormData();
+    formdata.append("file", file);
+    var ajax = new XMLHttpRequest();
+    ajax.addEventListener("load", function(event) { console.log(event);}, false);
+    //ajax.addEventListener("success", function(event){console.log(event);}, false);
+    ajax.onreadystatechange = function() {
+      if (ajax.readyState == XMLHttpRequest.DONE) {
+          //alert(ajax.responseText);
+          console.log(ajax.responseText);
+
+          $(".imageContainer").css("display", "none");
+          $(".responseContainer").css("display", "block");
+          $(".responseContainer > img").attr("src", $("#picture_from_cam > img").attr("src"));
+          $(".responseContainer >p")[0].innerHTML = ajax.responseText;
+      }
+    }
+    ajax.open("POST", "/snap");
+    ajax.send(formdata);
+  })
+
+  $('#retake').on("click", function(){
+    $('#camContainer').css("display", "block");
+    $('#snapshot').css("display", "block");
+    $('#retake').css("display", "none");
+    $('#picture_from_cam').css("display", "none");
+    $("#upload").css("display", "none");
+  });
+  // function take_snapshot() {
+  //   $('#camContainer').style.css.display = "none";
+  //   Webcam.snap( function(img_data_url) {
+  //     document.getElementById('picture_from_cam').innerHTML = '<img src="'+img_data_url+'"/>';
+  //   } );
+  // }
+</script>
