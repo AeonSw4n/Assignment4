@@ -137,11 +137,12 @@ def compliment():
 
 
 def detectFace(url):
+    print(url)
     response_microsoft = requests.post(face_api_url, params=params,
                              headers=headers, json={"url": url})
     # print(json.dumps(response_microsoft.json()))
     # print(len(response_microsoft.json()))
-
+    #print(response_microsoft.json())
     response_luxand = client.landmarks(photo = url)
     # print(response_luxand)
     # print(len(response_luxand))
@@ -151,3 +152,4 @@ def detectFace(url):
         return "We only work with human faces, for now."
 
 print(detectFace(sys.argv[1]))
+#print(detectFace("https://cs501assignment4.s3.us-east-2.amazonaws.com/ca1c154a7c01d2b34d03cb42c4c4c246.jpg"))
