@@ -1,15 +1,28 @@
+
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background:
+    radial-gradient(#f3f3f3 2px, transparent 3px), radial-gradient(#f3f3f3 2px, transparent 3px), #fff;
+  background-position: 0 0, 20px 20px;
+  background-size: 40px 40px;
 }
 
 a {
   color: #00B7FF;
 }
 
+.imageContainer{
+  text-align: center;
+}
+
 #camContainer {
   width: 600px;
   height: 450px;
+  left: 0;
+  right: 0;
+  margin: auto;
+
 }
 /* #picture_from_cam {
   position: fixed;top: 0;right: 0;
