@@ -166,18 +166,19 @@ router.get('/', function(req, res, next) {
 router.post('/snap', upload.single('file'), function(req, res){
   var base64Data = req.body.file.replace(/^data:image\/jpeg;base64,/, "");
   let randompath = randomstring.generate({length: 32, charset: "alphabetic"});
-  fs.writeFile("./images/" + randompath, base64Data, "base64", function(er){
-    console.log(er);
-  })
-  let file = __dirname+"/../images/"+randompath;
+  // fs.writeFile("./images/" + randompath, base64Data, "base64", function(er){
+  //   console.log(er);
+  // })
+  // let file = __dirname+"/../images/"+randompath;
   console.log(randompath);
   (async () => {
     try{
-      format = await FileType.fromFile(file);
+      //format = await FileType.fromFile(file);
+      let format = {ext: "jpg"}
       console.log(format.ext);
       if(format.ext == "jpg" || format.ext == "png" || format.ext == "jpeg"){
         let s3 = new aws.S3({ accessKeyId: process.env.AWS_ACCESS_KEY, secretAccessKey: process.env.AWS_SECRET_KEY });
-        const fileContent = fs.readFileSync(file);
+        const fileContent = Buffer.from(base64Data, 'base64')//fs.readFileSync(file);
         const params = {
             Bucket: 'cs501assignment4',
             Key: randompath+"."+format.ext, // File name you want to save as in S3
